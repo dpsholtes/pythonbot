@@ -33,11 +33,12 @@ async def on_message(message):
         return
     
     Rick_Quotes = [ 
-        #'It\’s a figure of speech, Morty. They\’re bureaucrats. I don\’t respect them.',
+        'It\’s a figure of speech, Morty. They\’re bureaucrats. I don\’t respect them.',
         (
         '“Glip Glop?” You\’re lucky a Traflorkian doesn\’t hear you say that. \n'
         'It\’s like the N-word and the C-word had a baby and it was raised by all the bad words for Jews.'
         ),
+        'Wubalubadubdub!',
 
     ]
     if message.content == 'Rick!':
