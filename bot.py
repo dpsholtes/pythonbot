@@ -2,49 +2,39 @@ import os
 import random
 
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='!')
 
-@client.event
-async def on_ready():
-    guild = discord.utils.get(client.guilds, name=GUILD)
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id:{guild.id})'
-    )
-    members = '\n - '.join([member.name for member in guild.members])
-    print(f'Guild Members:\n - {members}')
 
-@client.event
-async def on_member_join(member):
-    await member.create_dm()
-    await member.dm_channel.send(
-        f'Hi{member.name}, welcome to my Discord server'
-    )
-@client.event
-async def on_message(message):
-    #makes the bot not talk to itself
-    if message.author == client.user:
-        return
+@bot.command(name = 'Rick', help='Sends a Rick and Morty Quote')
+async def rick(ctx):
     
     Rick_Quotes = [ 
-        'It\’s a figure of speech, Morty. They\’re bureaucrats. I don\’t respect them.',
+        'It’s a figure of speech, Morty. They\'re bureaucrats. I don\'t respect them.',
         (
-        '“Glip Glop?” You\’re lucky a Traflorkian doesn\’t hear you say that. \n'
-        'It\’s like the N-word and the C-word had a baby and it was raised by all the bad words for Jews.'
+        '“Glip Glop?” You\'re lucky a Traflorkian doesn’t hear you say that. \n'
+        'It\'s like the N-word and the C-word had a baby and it was raised by all the bad words for Jews.'
         ),
         'Wubalubadubdub!',
+        'My life has been a lie! God is Dead! The government\'s lame! Thanksgiving is about killing Indians! Jesus wasn\'t born on Christmas! They moved the date! It was a pagan holiday!',
+        'Do you wanna develop an app?',
 
     ]
-    if message.content == 'Rick!':
-        response = random.choice(Rick_Quotes)
-        await message.channel.send(response)
-    elif message.content == 'raise-exception':
-        raise discord.DiscordException
+    response = random.choice(Rick_Quotes)
+    await ctx.send(response)
 
-client.run(TOKEN)
+@bot.command(name='roll_dice', help = 'Simulates rolling dice.')
+async def roll(ctx, number_of_dice: int, number_of_sides: int):
+    dice = [
+        str(random.choice(range(1, number_of_sides + 1)))
+        for _ in range(number_of_dice)
+    ]
+    await ctx.send(', '.join(dice))
+
+bot.run(TOKEN)
