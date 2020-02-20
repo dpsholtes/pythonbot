@@ -1,6 +1,7 @@
 import os
 import random
-
+import requests
+import json
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -36,5 +37,34 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
         for _ in range(number_of_dice)
     ]
     await ctx.send(', '.join(dice))
+
+@bot.command(name='weather', help = 'Gives current weather of a city.')
+async def weather(ctx, city_name: str):
+    api_key = "f447a8cebf03bf8ee549a7edd9bf0b06"
+    base_url = "https://api.openweathermap.org/data/2.5/weather?"
+
+    complete_url = base_url + "q=" + city_name + "&appid=" + api_key
+    response = requests.get(complete_url)
+    x = response.json()
+    if x["cod"] != "404":
+        y = x["main"]
+        current_temperature = y["temp"]
+        current_pressure = y["pressure"]
+        current_humidity = y["humidity"]
+        z = x["weather"]
+        weather_description = z[0]["description"]
+        weather_data = [
+        'Temperature in Kelvin: ' + str(current_temperature), 
+        'Atmospheric Pressure in hPa: ' + str(current_pressure),
+        'Humidity Percentage: ' + str(current_humidity),
+        'Description: ' + str(weather_description)
+       ]
+
+    else:
+        weather_data = [
+            'I\'m sorry, I was unable to find the weather conditions for ' + city_name + ' .'
+        ]
+    response = weather_data
+    await ctx.send('\n '.join(response))
 
 bot.run(TOKEN)
